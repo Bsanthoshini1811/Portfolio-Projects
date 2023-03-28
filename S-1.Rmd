@@ -1,0 +1,87 @@
+---
+title: Comparison of Exponential Distribution of large sample size with Central Limit
+  theorem
+author: "B Santhoshini"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+
+## Title 
+Comparison of Exponential Distribution of large sample size with Central Limit theorem
+
+## Overview 
+In this data analysis we are going to compare the exponential distribution with Central Limit theorem. For this analysis we assume lambda as 0.2 for all the simulations. Here we are going to compare the distribution of averages of 40 exponentials over 1000 simulations
+#Simulation Variables
+exponentials = 40,
+lambda = 0.2
+
+```{r}
+ECHO=TRUE
+set.seed(1337)
+lambda = 0.2
+exponentials = 40
+```
+
+```{r}
+simulationMeans = NULL
+for (i in 1:1000) {
+  simulationMeans = c(simulationMeans,mean(rexp(40,0.2)))
+}
+hist(simulationMeans)
+```
+##Embedding plots
+
+##Simulations
+Above we generated the distribution of 40 averages of random exponentials over 100 simulations.We named a variable simulationMeans and gave it an initial value NULL. Then using a for loop we generated averages of 40 exponentials over 1000 simulation. Then by using a function called hist in R for visualizing data in the form of histogram we made a plot of simulation Means.
+##Comparison of Means
+## Sample Mean
+```{r}
+smean <- mean(simulationMeans)
+smean
+```
+## Theoretical Mean = 1/lambda
+```{r}
+lambda <- 0.2
+mean <- lambda^-1
+mean
+```
+## Sample Mean Versus Theoretical Mean
+There is only a slight difference between the sample mean and the theoretical mean which corroborates the idea that if the sample size of the distribution is large enough then the exponential distribution or any type of distribution follows normal/Gaussian distribution. The very basic idea of Central Limit Theorem.
+```{r}
+abs(mean - smean)
+```
+##Comparison of Variance
+
+##Sample Variance
+```{r}
+svar<-var(simulationMeans)
+svar
+```
+##Theoretical Variance
+Variance of an exponential distribution is equal to (lambda * sqrt(n))^-2 
+exponentials(n) = 40 so,
+```{r}
+var <- (lambda * sqrt(40))^-2
+var
+```
+## Sample Variance Versus Theoretical Variance
+```{r}
+abs(var - svar)
+```
+There is only a slight difference between the Sample Variance and the Theoretical Variance
+##Distribution
+```{r}
+library(ggplot2)
+ggplot(data.frame(y=simulationMeans), aes(x=y)) + 
+  geom_histogram(aes(y=..density..), binwidth=0.2, fill="#0072B2", 
+                 color="black") +
+  stat_function(fun=dnorm, arg=list(mean=lambda^-1, 
+                                    sd=(lambda*sqrt(40))^-1), 
+                size=2) +
+  labs(title="Plot of the Simulations", x="Simulation Mean")
+```
+Here is a density histogram of 1000 simulations with an over lay of normal distribution with mean lambda^-1 and standard deviation of lambda * sqrt(40).
